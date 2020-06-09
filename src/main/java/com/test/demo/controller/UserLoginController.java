@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.security.Principal;
 
 @Controller
@@ -19,6 +18,7 @@ import java.security.Principal;
 public class UserLoginController {
     private UserLoginService userLoginService;
 
+    // User 로그인 성공시
     @GetMapping("/login/result")
     public String loginResult(Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -28,7 +28,7 @@ public class UserLoginController {
         userDetails.getAuthorities()
                 .forEach(auth -> log.info("auth > " + auth.toString()));
 
-        return "loginSuccess";
+        return "/user/loginSuccess";
     }
 
     // 로그아웃 결과 페이지
@@ -37,13 +37,13 @@ public class UserLoginController {
         return "index";
     }
 
-    // 회원가입
+    // 회원가입 페이지
     @GetMapping("/signup")
     public String getUserSignup() {
-        return "signup";
+        return "/user/signup";
     }
 
-    // 회원가입
+    // 회원가입 수행
     @PostMapping("/signup")
     public String postUserSignup(
             @RequestParam(name = "name") String name,
@@ -52,5 +52,24 @@ public class UserLoginController {
         User user = User.builder().name(name).password(password).build();
         userLoginService.joinUser(user);
         return "redirect:/";
+    }
+
+    // 비밀번호 변경 페이지
+    @GetMapping("/password")
+    public String changePassword() {
+        return "/user/passwordChange";
+    }
+
+    @PostMapping("/password/change")
+    public String passwordChange(
+            @RequestParam(name = "password") String password,
+            Principal principal
+    ){
+        User user = User.builder()
+                .name(principal.getName())
+                .password(password)
+                .build();
+        userLoginService.changePassword(user);
+        return "redirect:/user/logout";
     }
 }

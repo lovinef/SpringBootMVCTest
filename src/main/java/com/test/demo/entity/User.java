@@ -45,6 +45,11 @@ public class User {
     private LocalDateTime modifiedDate; // 수정일
 
 
+    public User changePassword(String password){
+        this.password = password;
+        return this;
+    }
+
     @Builder
     public User(String name, String password){
         this.name = name;

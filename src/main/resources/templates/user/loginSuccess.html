@@ -11,7 +11,7 @@
         <span sec:authentication="name"></span>님 환영합니다~
     </p>
     <a sec:authorize="isAuthenticated()" th:href="@{/user/logout}">로그아웃</a>
-    <a sec:authorize="hasRole('USER')" th:href="@{/user/info}">내정보</a>
+    <a sec:authorize="hasRole('USER')" th:href="@{/user/password}">비밀번호 변경</a>
     <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin}">어드민</a>
 </body>
 </html>

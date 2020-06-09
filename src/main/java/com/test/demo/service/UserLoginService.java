@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -30,6 +31,15 @@ public class UserLoginService implements UserDetailsService {
                 .build();
 
         return userRepository.save(userEntity).getId();
+    }
+
+    @Transactional
+    public void changePassword(User user){
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+        userRepository.findByName(user.getName()).ifPresent(userEntity ->{
+            userEntity.changePassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        });
     }
 
     @Override
