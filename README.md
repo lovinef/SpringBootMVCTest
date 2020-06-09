@@ -8,3 +8,6 @@ DB : H2
 
 ### FrontEnd
 Thymeleaf
+
+### 기본 접근 페이지
+http://localhost:8080
