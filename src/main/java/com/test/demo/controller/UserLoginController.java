@@ -23,7 +23,7 @@ public class UserLoginController {
     // User 로그인 성공시
     @GetMapping("/login/result")
     public String loginResult(Authentication authentication){
-        return "/user/loginSuccess";
+        return "user/loginSuccess";
     }
 
     // 로그아웃 결과 페이지
@@ -35,7 +35,7 @@ public class UserLoginController {
     // 회원가입 페이지
     @GetMapping("/signup")
     public String getUserSignup() {
-        return "/user/signup";
+        return "user/signup";
     }
 
     // 회원가입 수행
@@ -52,7 +52,7 @@ public class UserLoginController {
     // 비밀번호 변경 페이지
     @GetMapping("/password")
     public String changePassword() {
-        return "/user/passwordChange";
+        return "user/passwordChange";
     }
 
     @PostMapping("/password/change")
