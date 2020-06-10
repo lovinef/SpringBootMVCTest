@@ -10,12 +10,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -24,10 +27,11 @@ public class UserLoginService implements UserDetailsService {
 
     @Transactional
     public Long joinUser(User user){
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
         com.test.demo.entity.User userEntity = com.test.demo.entity.User.builder()
                 .name(user.getName())
-                .password(bCryptPasswordEncoder.encode(user.getPassword()))
+                .password(passwordEncoder.encode(user.getPassword()))
                 .build();
 
         return userRepository.save(userEntity).getId();
@@ -35,10 +39,9 @@ public class UserLoginService implements UserDetailsService {
 
     @Transactional
     public void changePassword(User user){
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
         userRepository.findByName(user.getName()).ifPresent(userEntity ->{
-            userEntity.changePassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            userEntity.changePassword(passwordEncoder.encode(user.getPassword()));
         });
     }
 
@@ -46,6 +49,14 @@ public class UserLoginService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         com.test.demo.entity.User userEntity = userRepository.findByName(username)
                                                             .orElseThrow(() -> new UsernameNotFoundException(username));
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String password = request.getParameter("password"); // get from request parameter
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        if(!passwordEncoder.matches(password, userEntity.getPassword())){
+            throw new UsernameNotFoundException("비밀번호가 잘못 되었습니다.");
+        }
 
         List<GrantedAuthority> authorities = new ArrayList<>();
 

@@ -35,7 +35,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         // HttpSecurity를 통해 HTTP 요청에 대한 웹 기반 보안을 구성할 수 있습니다
         http.authorizeRequests()    //HttpServletRequest에 따라 접근(access)을 제한
                 // 페이지 권한 설정
-                .antMatchers("/user/signup").permitAll()
                 .antMatchers("/user/**").hasRole("USER")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/**").permitAll()
@@ -44,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .formLogin()    // form 기반으로 인증. 로그인 정보는 기본적으로 HttpSession을 이용
                     .loginPage("/user/login")
                     .defaultSuccessUrl("/user/login/result")    // 로그인이 성공했을 때 이동되는 페이지
-                    .failureForwardUrl("/?loginerror=true")     // 로그인 실패시 처리
+                    .failureUrl("/?loginerror=true")     // 로그인 실패시 처리
                 // .usernameParameter("파라미터명")  // 로그인 form에서 아이디는 name=username인 input을 기본으로 인식하나, 파라미터명 변경 가능
                 .permitAll()
                 .and()
