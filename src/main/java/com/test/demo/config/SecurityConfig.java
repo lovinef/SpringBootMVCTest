@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         // HttpSecurity를 통해 HTTP 요청에 대한 웹 기반 보안을 구성할 수 있습니다
         http.authorizeRequests()    //HttpServletRequest에 따라 접근(access)을 제한
                 // 페이지 권한 설정
+                .antMatchers("/user/signup").permitAll()
                 .antMatchers("/user/**").hasRole("USER")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/**").permitAll()
